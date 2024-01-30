@@ -1,0 +1,241 @@
+﻿<UserControl x:Class="Telegram_WPF.Views.WindowListenGroup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:spinner="clr-namespace:Telegram_WPF.Controls.Spinner"
+        xmlns:cardPost="clr-namespace:Telegram_WPF.Controls.Cards"
+        xmlns:MyEntry = "clr-namespace:Telegram_WPF.Controls.Entrys"
+        xmlns:local="clr-namespace:Telegram_WPF.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        prism:ViewModelLocator.AutoWireViewModel="true"
+        Height="650" 
+        Width="1200"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+
+
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0"
+                Margin="50,50,10,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+
+            <Button Grid.Row="0" 
+                    Width="500"
+                    Height="30"
+                    FontFamily="Verdana"
+                    FontSize="12" 
+                    FontWeight="Light"
+                    VerticalAlignment="Top"
+                    BorderThickness="0"
+                    Foreground="{DynamicResource auth_ButtonText}"
+                    Background="{DynamicResource auth_SecondLabel}"
+                    Command="{Binding ListChooseGroupBtn}">
+                <StackPanel Orientation="Horizontal">
+                    <Label HorizontalAlignment="Center" Content="Choose groups for listenin"/>
+                    <Image HorizontalAlignment="Right" Stretch="Fill" Width="24" Height="24" Source="/Telegram_WPF;component/Images/down_arrow.png"/>
+                </StackPanel>
+            </Button>
+
+            <Canvas Grid.Row="1"
+                Visibility="{Binding IsVisibleListGroup, UpdateSourceTrigger=PropertyChanged}" 
+                Margin="0,82,0,0"  
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center"
+                Height="200" 
+                MinWidth="500" 
+                Panel.ZIndex="2">
+
+     <ListBox ItemsSource="{Binding ListGroup, UpdateSourceTrigger=PropertyChanged}"
+              SelectedIndex="-1"
+              SelectionMode="Multiple" 
+              Width="auto" 
+              MinWidth="500"
+              Height="200"
+              HorizontalAlignment="Center"
+              HorizontalContentAlignment="Left" 
+              ClipToBounds="False"
+              Padding="0,10,0,10">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <StackPanel Orientation="Horizontal" >
+                                <Image Source="{Binding Path=Img}" 
+                                       Width="12" 
+                                       Height="12" 
+                                       VerticalAlignment="Center"/>
+
+                                <TextBlock FontSize="12" 
+                                           Margin="10,0,10,0" 
+                                           Text="{Binding Path=Group.MainUsername}" 
+                                           TextAlignment="Left"
+                                           VerticalAlignment="Center"/>
+
+                                <TextBlock FontSize="12" 
+                                           Text="{Binding Path=Group.Title}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <prism:InvokeCommandAction Command="{Binding SelectedCommand}"
+                                                TriggerParameterPath="AddedItems" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ListBox>
+            </Canvas>
+
+            <StackPanel Grid.Row="2"
+                        Orientation="Vertical"  
+                        Width="500"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        Margin="0,0,0,0">
+
+                <TextBlock Text="Enter the words that should be in the messages"
+                   Foreground="{DynamicResource auth_SecondLabel}"
+                   FontFamily="Verdana"
+                   Margin="0,0,0,2"/>
+
+                <MyEntry:MyTextBox Height="50"
+                            SpellCheck.IsEnabled="True" 
+                            Language="uk-UA"
+                            VerticalScrollBarVisibility="Auto"
+                            TextWrapping="Wrap"
+                            SelectedType="mixed"
+                            IsValid="{Binding IsValidInput, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            VerticalContentAlignment="Top"
+                            FontFamily="Verdana"
+                            FontSize="14" 
+                            Text="{Binding Path=ShouldBeText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Enter words that should not be in messages"
+                   Foreground="{DynamicResource auth_SecondLabel}"
+                   FontFamily="Verdana"
+                   Margin="0,30,0,2"/>
+
+                <MyEntry:MyTextBox Height="50"
+                            SpellCheck.IsEnabled="True" 
+                            Language="uk-UA"
+                            VerticalScrollBarVisibility="Auto"
+                            TextWrapping="Wrap"
+                            SelectedType="mixed"
+                            IsValid="{Binding IsValidInput, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            VerticalContentAlignment="Top"
+                            FontFamily="Verdana"
+                            FontSize="14" 
+                            Text="{Binding Path=NotShouldBeText, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                
+
+                <TextBlock Text="For forwarding"
+                           FontFamily="Verdana"
+                           Margin="0,30,0,2"
+                           HorizontalAlignment="Center"/>
+
+
+                <TextBlock Text="Choose which group to forward the message to"
+                   Foreground="{DynamicResource auth_SecondLabel}"
+                   FontFamily="Verdana"
+                   Margin="0,30,0,2"/>
+                
+                <ComboBox ItemsSource="{Binding ListGroup, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedItem="{Binding SelectGroupToForward}"
+                          IsTextSearchEnabled="True" 
+                          DisplayMemberPath="Title"/>
+                
+                <CheckBox Content="Copy the message without the 'Forwarded' header"
+                          IsChecked="{Binding IsCheckedForwardHeader}"
+                          Foreground="{DynamicResource auth_SecondLabel}"
+                          VerticalAlignment="Bottom"
+                          FontFamily="Verdana"
+                          Margin="0,50,0,0"/>
+
+            </StackPanel>
+
+
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center" >
+
+                <Button Height="30"
+                    Width="180"
+                    FontFamily="Verdana"
+                    FontSize="12" 
+                    FontWeight="Light"
+                    Foreground="{DynamicResource auth_ButtonText}"
+                    Background="{DynamicResource auth_ButtonBackground}"
+                    BorderThickness="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding StartListenBtn}"
+                    CommandParameter="listen">
+                Start listen
+            </Button>
+
+                <Button Height="30"
+                   Margin="2,0,0,0"
+                    Width="180"
+                    FontFamily="Verdana"
+                    FontSize="12" 
+                    FontWeight="Light"
+                    Foreground="{DynamicResource auth_ButtonText}"
+                    Background="{DynamicResource auth_ButtonBackground}"
+                    BorderThickness="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding StartListenBtn}"
+                    CommandParameter="listen_forward">
+                    Start listen and forwarding
+                </Button>
+
+            </StackPanel>
+            
+        </Grid>
+
+        <ListBox Grid.Column="1"
+                 ItemsSource="{Binding ListMessage, UpdateSourceTrigger=PropertyChanged}"
+                 SelectedItem="{Binding SelectedMessage}" 
+                 SelectedIndex="-1"
+                 SelectionMode="Extended"
+                 Width="480"
+                 Height="570"
+                 HorizontalAlignment="Center"
+                 HorizontalContentAlignment="Center" 
+                 VerticalAlignment="Stretch"
+                 ClipToBounds="False"
+                 Margin="0,10,0,0"
+                 Padding="0,10,0,10">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                    <Border BorderBrush="LightGray"
+                            BorderThickness="1"
+                            Width="445"
+                            MaxHeight="530"
+                            Margin="0,0,0,15"
+                            Padding="0,0,0,5">
+
+                        <cardPost:CardPost Post="{Binding .}" ForwardImg="/Images/arrow_forward.png"/>
+
+                    </Border>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </Grid>
+</UserControl>

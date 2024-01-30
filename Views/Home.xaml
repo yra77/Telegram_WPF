@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="Telegram_WPF.Views.Home"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Telegram_WPF.Views"
+      xmlns:spinner="clr-namespace:Telegram_WPF.Controls.Spinner"
+      xmlns:cardPost="clr-namespace:Telegram_WPF.Controls.Cards"
+      xmlns:prism="http://prismlibrary.com/"
+      prism:ViewModelLocator.AutoWireViewModel="true"
+      Height="650" 
+      Width="1100">
+
+    <Grid HorizontalAlignment="Stretch" 
+          ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+
+       
+            <Menu Grid.Row="0" 
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="0,0,0,5"
+                  FontFamily="Verdana"
+                  Background="{DynamicResource SecondLabel}"
+                  FontSize="12">
+
+            <MenuItem Template="{StaticResource rootMenuItem}"
+                          Header="Menu"
+                          Margin="0,0,0,0">
+
+                <MenuItem Header="Create message" 
+                              Command="{Binding CreateMsgBtn}"/>
+
+                <MenuItem Header="Listen to groups"
+                          Command="{Binding ListenToGroups}"/>
+            </MenuItem>
+
+            <MenuItem Header="Settings"
+                          Template="{StaticResource rootMenuItem}"
+                          Margin="0,0,0,0">
+
+                <MenuItem Header="Settings"
+                              Command="{Binding SettingsBtn}">
+                    <MenuItem.Icon>
+                        <Image Source="\Images\settings.png" Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+    
+    <Grid HorizontalAlignment="Stretch" Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0" x:Name="pbStatus"
+                  ItemsSource="{Binding ListGroup, UpdateSourceTrigger=PropertyChanged}"
+              SelectedItem="{Binding SelectedGroup}" 
+              SelectedIndex="-1"
+              SelectionMode="Single"
+              Width="auto"
+              MinWidth="500"
+              HorizontalAlignment="Left"
+              HorizontalContentAlignment="Center" 
+              ClipToBounds="False"
+              Padding="0,10,0,10">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        
+                        <GridViewColumn Header="Icon" Width="auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding Path=Img}" Width="10" Height="10" Margin="0,0,5,0" />
+                                        <TextBlock FontSize="12"  Text="{Binding Path=Group.MainUsername}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Group.Title}"></GridViewColumn>
+                        
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+            <StackPanel Grid.Column="1" 
+                        Orientation="Vertical" HorizontalAlignment="Right"
+                        Width="480">
+
+                <Border Padding="5"
+                            BorderBrush="{DynamicResource h_groupinfoBorder}" 
+                            BorderThickness="1">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Stretch">
+                    <TextBlock Text="{Binding SelectedGroup.Title}" Margin="0,0,20,0"/>
+                    <Button Command="{Binding GroupInfo_Btn}" 
+                            BorderBrush="{DynamicResource h_ButtonBorder}" 
+                            BorderThickness="1" 
+                            Background="{DynamicResource h_ButtonBackground}"
+                            HorizontalAlignment="Right"
+                            Padding="10,0,10,0">
+                        Group Info
+                    </Button>
+                </StackPanel>
+                </Border>
+                
+        <ListBox ItemsSource="{Binding ListMessage, UpdateSourceTrigger=PropertyChanged}"
+                 SelectedItem="{Binding SelectedMessage}" 
+                 SelectedIndex="-1"
+                 SelectionMode="Extended"
+                 Width="480"
+                 Height="570"
+                 HorizontalAlignment="Right"
+                 HorizontalContentAlignment="Center" 
+                 VerticalAlignment="Stretch"
+                 ClipToBounds="False"
+                 Margin="0,10,0,0"
+                 Padding="0,10,0,10">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                    <Border BorderBrush="LightGray"
+                            BorderThickness="1"
+                            Width="445"
+                            MaxHeight="530"
+                            Margin="0,0,0,15"
+                            Padding="0,0,0,5">
+
+                                <cardPost:CardPost Post="{Binding .}" ForwardImg="/Telegram_WPF;component/Images/arrow_forward.png"/>
+                            <!--<spinner:SpinnerControl 
+                HorizontalContentAlignment="Center"
+                VerticalAlignment="Center" Visibility="Visible"/>-->
+                        <!--Visibility="{Binding IsLoaded, UpdateSourceTrigger=PropertyChanged}"/>-->
+
+                    </Border>
+                
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>
